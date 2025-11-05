@@ -29,6 +29,8 @@ ASTNode *root; // Global variabe AST root
 %token <num> NUMBER
 %token <id> IDENTIFIER
 %token IF ELSE
+%left '+' '-'
+%left '*' '/'
 %type <ast> expression term factor assignment statement conditional
 
 %% // Grammar Rules
@@ -67,22 +69,25 @@ expression:
     expression '+' term {
         $$ = createBinaryNode("add", $1, $3);
     }
-
-
-//add subtraction rule
-
-
+    | expression '-' term {
+        $$ = createBinaryNode("sub", $1, $3);
+    }
     | term {
         $$ = $1;
     }
 ;
 
-
-
 term:
-    
-//Create all the term rules and respective semantic instructions Term * factor ,  Term/facror , factor
-
+    term '*' factor {
+        $$ = createBinaryNode("mul", $1, $3);
+    }
+    | term '/' factor {
+        $$ = createBinaryNode("div", $1, $3);
+    }
+    | factor {
+        $$ = $1;
+    }
+;
 
 factor:
     NUMBER {
